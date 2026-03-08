@@ -187,7 +187,7 @@ class Grid:
             print('Error: Grids must be of matching size.')
             return None
 
-        if sorted(self._occupancies) == sorted(h._occupancies):      ##### UNCLEAR? what should be returned from this function if anything, would you like a print statement or a Bool
+        if sorted(self._occupancies) == sorted(h._occupancies):      
             return True
         else:
             return False
@@ -206,7 +206,7 @@ class Grid:
             print('Error: Grids must be of matching size.')
             return None
 
-        if set(self._occupancies).issubset(h._occupancies):         ##### UNCLEAR? what should be returned from this function if anything, would you like a print statement or a Bool
+        if set(self._occupancies).issubset(h._occupancies):         
             return True
         
         else:
@@ -226,7 +226,7 @@ class Grid:
             print('Error: Grids must be of matching size.')
             return None
 
-        if set(h._occupancies).issubset(self._occupancies):         ##### UNCLEAR? what should be returned from this function if anything, would you like a print statement or a Bool
+        if set(h._occupancies).issubset(self._occupancies):         
             return True
         
         else:
@@ -237,9 +237,6 @@ class Grid:
 if __name__ == "__main__":
     x = Grid(n = 3, occupancies = [(0, 1), (0, 2), (1, 0), (1, 1), (2, 0), (2, 2)])
 
-    print("\nInstance:")
     print(x.__str__())
-    print("\nVertical Reflection:")
     print(x.v_reflected())
-    print("\nRotation 90 degrees Clockwise: ")
     print(x.rotated())
