@@ -81,7 +81,7 @@ class Grid:
             self._rows[row][col] = True
             self._occupancies.append(coords)
 
-    def del_occupancy(self, coords):
+    def del_occupancy(self, coords:tuple[int, int]):
         """
         This method marks a cell as vacant.
 
