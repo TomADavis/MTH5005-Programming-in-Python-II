@@ -1,3 +1,10 @@
+"""Represent and manipulate square occupancy grids.
+
+This module defines the Grid class for storing an n x n grid whose cells are
+either occupied or vacant. It supports string representation, copying,
+reflections, rotation, comparison operations, and XOR-style addition of grids.
+"""
+
 class Grid:
     """
     A class to represent an n x n grid with occupied / vacant cells.
