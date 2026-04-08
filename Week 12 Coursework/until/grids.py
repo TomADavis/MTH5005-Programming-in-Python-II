@@ -22,12 +22,12 @@ UNTiL
 The helper function til is used to test whether three points lie on a single straight line.
 """
 
-from itertools import combinations      #can I even use this??? ask Matthew at some on Thursday. 581 566
+from itertools import combinations
 from .exceptions import OccupancyError, OperatorError
 
 class Grid:
     """
-    A class to represent an n x n grid with occupied / vacant cells.
+    A class to represent an n x n grid with occupied and vacant cells.
 
     Parameters
     -------------
@@ -38,9 +38,55 @@ class Grid:
         Coordinates of the occupied cells given as (row, column) pairs.
 
     To construct an instance, call the constructor Grid with parameters
-    n and occupancies, e.g.
+    n and occupancies, for example
 
     Grid(n=..., occupancies=[(r1, c1), (r2, c2), ...])
+
+    Attributes
+    -------------
+    occupancies: list[tuple[int, int]]
+        A copy of the occupied coordinates of the grid.
+
+    Methods
+    ----------
+    get_row(i)
+        Return a copy of row i.
+
+    add_occupancy(coords)
+        Occupy a vacant cell at the given coordinates.
+
+    del_occupancy(coords)
+        Vacate an occupied cell at the given coordinates.
+
+    copy()
+        Return a copy of the grid.
+
+    v_reflected()
+        Return the vertical reflection of the grid.
+
+    h_reflected()
+        Return the horizontal reflection of the grid.
+
+    rotated()
+        Return the clockwise rotation of the grid.
+
+    __str__()
+        Return a human-readable string representation of the grid.
+
+    __repr__()
+        Return a constructor-style representation of the grid.
+
+    __add__(h)
+        Return the XOR-style sum of this grid and h.
+
+    __eq__(h)
+        Test whether this grid is equal to h.
+
+    __le__(h)
+        Test whether this grid is a subset of h.
+
+    __ge__(h)
+        Test whether this grid is a superset of h.
     """
 
     def __init__(self, n, occupancies):
@@ -159,7 +205,7 @@ class Grid:
             If the cell is currently vacant, it is set to True in _rows and the
             coordinate is appended to _occupancies.  
                 
-            If the cell is already occupied, no changes are made.
+            If the cell is already occupied, raises an OccupancyError.
         """
         row, col = coords
 
@@ -189,7 +235,7 @@ class Grid:
             If the cell is currently occupied, it is set to False in _rows and the
             coordinate is removed from _occupancies.  
             
-            If the cell is already vacant, no changes are made.
+            If the cell is already vacant, raises an OccupancyError.
         """
         row, col = coords
         if self._rows[row][col]:
@@ -411,12 +457,41 @@ class UniformGrid(Grid):
     """
     Represent a uniform occupancy grid.
     
-    A uniformGrid is a Grid in which every row and every column contains 
+    A UniformGrid is a Grid in which every row and every column contains 
     exactly two occupied cells.
     
     Instances are validated when they are created, and occupancies cannot 
     later be added or removed directly.
+
+    Parameters
+    -------------
+        n: int
+            Side length of the grid.
+            
+        occupancies: list[tuple[int, int]]
+            Coordinates of occupied cells.
+
+    Attributes
+    -------------
+    occupancies : list[tuple[int, int]]
+        A copy of the occupied coordinates of the grid.
+
+    Methods
+    ----------
+    add_occupancy(coords)
+        Raise an error, since direct occupancy changes may break uniformity.
+
+    del_occupancy(coords)
+        Raise an error, since direct occupancy changes may break uniformity.
+
+    commutator(coords1, coords2)
+        Perform a commutator move on two occupied cells.
+
+    Notes
+    --------
+    UniformGrid inherits the remaining public methods of Grid.
     """
+
     def __init__(self, n, occupancies):
         """
         Initialises a uniform grid and validates its row and column counts
@@ -455,19 +530,19 @@ class UniformGrid(Grid):
 
         Raises
         ---------
-        OperationError
+        OperatorError
             Always, because adding a single occupancy could break the uniformity condition.
         """
         raise OperatorError('Cannot add/delete occupancies to instances of UniformGrid.')
     
     def del_occupancy(self, coords):
         """
-        Disallow direct delection of occupancies.
+        Disallow direct deletion of occupancies.
         
         Raises
         ---------
         OperatorError
-            Always, because adding a single occupancy could break the uniformity condition.
+            Always, because deleting a single occupancy could break the uniformity condition.
         """
         raise OperatorError('Cannot add/delete occupancies to instances of UniformGrid.')
 
@@ -528,11 +603,33 @@ def til(pt1, pt2, pt3):
 
 class NTiL(Grid):
     """
-    Represent a No Three in Line [NTiL] occupancy grid.
+    Represent a No Three in Line (NTiL) occupancy grid.
 
     An NTiL grid is a Grid in which no three occupied cells lie on the 
     same straight line. The condition is checked on construction and also
     when a new occupancy is added.
+
+    Parameters
+    -------------
+    n : int
+        Side length of the grid.
+
+    occupancies : list[tuple[int, int]]
+        Coordinates of the occupied cells.
+
+    Attributes
+    -------------
+    occupancies : list[tuple[int, int]]
+        A copy of the occupied coordinates of the grid.
+
+    Methods
+    ----------
+    add_occupancy(coords)
+        Add an occupancy only if doing so preserves the NTiL condition.
+
+    Notes
+    --------
+    NTiL inherits the remaining public methods of Grid.
     """
     def __init__(self, n, occupancies):
         """
@@ -591,6 +688,23 @@ class UNTiL(UniformGrid, NTiL):
 
     A UNTiL grid inherits the row and column uniformity condition from UniformGrid and the NTiL
     condition from NTiL. Validation is delegated through the inherited initialiser chain.
+
+    Parameters
+    -------------
+    n : int
+        Side length of the grid.
+
+    occupancies : list[tuple[int, int]]
+        Coordinates of the occupied cells.
+
+    Attributes
+    -------------
+    occupancies : list[tuple[int, int]]
+        A copy of the occupied coordinates of the grid.
+
+    Notes
+    --------
+    UNTiL inherits its public methods from UniformGrid and NTiL.
     """
     def __init__(self, n, occupancies):
         """
