@@ -118,7 +118,7 @@ class Grid:
         for convenient access.
         """
         self._n = n
-        self._occupancies = occupancies
+        self._occupancies = occupancies.copy()
         self._rows = [[False]*self._n for _ in range(self._n)]
         for row, col in self._occupancies:
             self._rows[row][col] = True
@@ -509,7 +509,7 @@ class UniformGrid(Grid):
         OccupancyError
             If any row or any column does not contain exactly two occupied cells.
         """
-        super().__init__(n, occupancies)
+        Grid.__init__(self, n, occupancies)  #changed from Grid. ... (self, ...)
 
         for row in self._rows:
             if row.count(True) != 2:
@@ -648,7 +648,7 @@ class NTiL(Grid):
         OccupancyError
             If any three occupied cells lie on a straight line.
         """
-        super().__init__(n, occupancies)
+        Grid.__init__(self, n, occupancies)
 
         for pt1, pt2, pt3 in combinations(self._occupancies, 3):
             if til(pt1, pt2, pt3):
@@ -718,7 +718,8 @@ class UNTiL(UniformGrid, NTiL):
         occupancies: list[tuple[int, int]]
             Coordinates of occupied cells.
         """
-        super().__init__(n, occupancies)
+        UniformGrid.__init__(self, n, occupancies)
+        NTiL.__init__(self, n, occupancies)
 
 
 
@@ -728,3 +729,7 @@ if __name__ == "__main__":
     print(x.__str__())
     print(x.v_reflected())
     print(x.rotated())
+
+    test = UNTiL(4, [(0,0), (0,1), (0,2), (1,1), (1,3), (2,2), (3,0), (3,3)])
+
+    print(test)
