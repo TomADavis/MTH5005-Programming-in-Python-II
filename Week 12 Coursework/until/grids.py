@@ -509,7 +509,7 @@ class UniformGrid(Grid):
         OccupancyError
             If any row or any column does not contain exactly two occupied cells.
         """
-        Grid.__init__(self, n, occupancies)  #changed from Grid. ... (self, ...)
+        Grid.__init__(self, n, occupancies)  
 
         for row in self._rows:
             if row.count(True) != 2:
@@ -722,14 +722,3 @@ class UNTiL(UniformGrid, NTiL):
         NTiL.__init__(self, n, occupancies)
 
 
-
-if __name__ == "__main__":
-    x = Grid(n = 3, occupancies = [(0, 1), (0, 2), (1, 0), (1, 1), (2, 0), (2, 2)])
-
-    print(x.__str__())
-    print(x.v_reflected())
-    print(x.rotated())
-
-    test = UNTiL(4, [(0,0), (0,1), (0,2), (1,1), (1,3), (2,2), (3,0), (3,3)])
-
-    print(test)
